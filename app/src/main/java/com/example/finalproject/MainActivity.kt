@@ -6,22 +6,15 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-
 import com.google.android.gms.common.api.ApiException
-import com.google.android.gms.maps.model.LatLng
 import com.google.android.libraries.places.api.Places
-import com.google.android.libraries.places.api.model.AutocompleteSessionToken
 import com.google.android.libraries.places.api.model.Place
-import com.google.android.libraries.places.api.model.RectangularBounds
 import com.google.android.libraries.places.api.model.TypeFilter
-import com.google.android.libraries.places.api.net.FetchPlaceRequest
-import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRequest
-import com.google.android.libraries.places.api.net.FindAutocompletePredictionsResponse
-import com.google.android.libraries.places.api.net.PlacesClient
+import com.google.android.libraries.places.api.net.*
 import com.google.android.libraries.places.widget.Autocomplete
 import com.google.android.libraries.places.widget.AutocompleteActivity
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
-
+import kotlinx.android.synthetic.main.activity_main.*
 
 
 class MainActivity : AppCompatActivity() {
@@ -38,12 +31,58 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun buttonPressed(view: View) {
-        val intent = Autocomplete.IntentBuilder(AutocompleteActivityMode.OVERLAY,
-            listOf(Place.Field.ID, Place.Field.NAME, Place.Field.PRICE_LEVEL, Place.Field.ADDRESS, Place.Field.OPENING_HOURS, Place.Field.LAT_LNG))
+        val intent = Autocomplete.IntentBuilder(
+            AutocompleteActivityMode.OVERLAY,
+            listOf(
+                Place.Field.ID,
+                Place.Field.NAME,
+                Place.Field.PRICE_LEVEL,
+                Place.Field.ADDRESS,
+                Place.Field.OPENING_HOURS,
+                Place.Field.LAT_LNG,
+                Place.Field.PHOTO_METADATAS
+            )
+        )
             .setTypeFilter(TypeFilter.ESTABLISHMENT)
             .build(this)
 
         startActivityForResult(intent, AUTOCOMPLETE_REQUEST_CODE)
+    }
+
+    fun getPhoto(id: String) {
+        // Specify fields. Requests for photos must always have the PHOTO_METADATAS field.
+        val fields: List<Place.Field> =
+            listOf(Place.Field.PHOTO_METADATAS)
+
+        // Get a Place object (this example uses fetchPlace(), but you can also use findCurrentPlace())
+        val placeRequest = FetchPlaceRequest.newInstance(id, fields)
+
+        placesClient.fetchPlace(placeRequest).addOnSuccessListener { response: FetchPlaceResponse ->
+            val place = response.place
+            // Get the photo metadata.
+            val photoMetadata = place.photoMetadatas!![0]
+            // Get the attribution text.
+            val attributions = photoMetadata.attributions
+            // Create a FetchPhotoRequest.
+            val photoRequest = FetchPhotoRequest.builder(photoMetadata)
+                .setMaxWidth(500) // Optional.
+                .setMaxHeight(300) // Optional.
+                .build()
+            placesClient.fetchPhoto(photoRequest)
+                .addOnSuccessListener { fetchPhotoResponse: FetchPhotoResponse ->
+                    val bitmap = fetchPhotoResponse.bitmap
+                    imageView.setImageBitmap(bitmap)
+                }.addOnFailureListener { exception: Exception ->
+                    if (exception is ApiException) {
+                        val statusCode = exception.statusCode
+                        // Handle error with given status code.
+                        Log.e(
+                            "GMAPS",
+                            "Place not found: " + exception.message
+                        )
+                    }
+                }
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -52,7 +91,8 @@ class MainActivity : AppCompatActivity() {
             when (resultCode) {
                 Activity.RESULT_OK -> {
                     val place = Autocomplete.getPlaceFromIntent(data!!)
-                    Log.i("GMAPS", "Place: " + place.name + ", " + place.id)
+                    Log.i("GMAPS", "Place: " + place.toString() + ", " + place.id)
+                    getPhoto(place.id!!)
                 }
                 AutocompleteActivity.RESULT_ERROR -> {
                     // TODO: Handle the error.
