@@ -1,4 +1,4 @@
-package com.example.finalproject
+package com.example.finalproject.layout
 
 import android.content.Context
 import android.content.Intent
@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
 import androidx.viewpager.widget.ViewPager
+import com.example.finalproject.R
 import com.google.android.material.tabs.TabLayout
 
 
