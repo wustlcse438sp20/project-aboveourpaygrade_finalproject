@@ -27,7 +27,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         Places.initialize(applicationContext, getString(R.string.google_maps_key))
-        placesClient = Places.createClient(this)
+
     }
 
     fun buttonPressed(view: View) {
@@ -55,6 +55,7 @@ class MainActivity : AppCompatActivity() {
             when (resultCode) {
                 Activity.RESULT_OK -> {
                     val place = Autocomplete.getPlaceFromIntent(data!!)
+                    data.putExtra("contents", "place_extra");
                     Log.i("GMAPS", "Place: " + place.toString() + ", " + place.id)
 //                    getPhoto(place.id!!)
                 }
