@@ -3,6 +3,7 @@ package com.example.finalproject.layout
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
+import com.example.finalproject.R
 
 class NewsActivity : AppCompatActivity() {
 

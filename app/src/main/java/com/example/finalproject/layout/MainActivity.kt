@@ -15,6 +15,7 @@ import com.google.android.libraries.places.api.net.*
 import com.google.android.libraries.places.widget.Autocomplete
 import com.google.android.libraries.places.widget.AutocompleteActivity
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
+import com.google.firebase.auth.FirebaseAuth
 
 
 class MainActivity : AppCompatActivity() {
@@ -72,7 +73,13 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun showNews(view: View) {}
-    fun logout(view: View) {}
+    fun logout(view: View) {
+
+        FirebaseAuth.getInstance().signOut()
+        deleteFile("login")
+        val intent = Intent(this, LoginActivity::class.java)
+        startActivity(intent)
+    }
 
 
 }
