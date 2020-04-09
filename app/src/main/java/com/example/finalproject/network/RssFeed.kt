@@ -26,18 +26,21 @@ class RssFeed {
         parser.nextTag()
         val entries = mutableListOf<Entry>()
 
-        parser.require(XmlPullParser.START_TAG, ns, "feed")
+        parser.require(XmlPullParser.START_TAG, ns, "rss")
+        parser.next()
+        parser.next()
         while (parser.next() != XmlPullParser.END_TAG) {
             if (parser.eventType != XmlPullParser.START_TAG) {
                 continue
             }
             // Starts by looking for the entry tag
-            if (parser.name == "entry") {
+            if (parser.name == "item") {
                 entries.add(readEntry(parser))
             } else {
                 skip(parser)
             }
         }
+
         return entries
     }
 
@@ -46,7 +49,7 @@ class RssFeed {
     // to their respective "read" methods for processing. Otherwise, skips the tag.
     @Throws(XmlPullParserException::class, IOException::class)
     private fun readEntry(parser: XmlPullParser): Entry {
-        parser.require(XmlPullParser.START_TAG, ns, "entry")
+        parser.require(XmlPullParser.START_TAG, ns, "item")
         var title: String? = null
         var description: String? = null
         var link: String? = null
