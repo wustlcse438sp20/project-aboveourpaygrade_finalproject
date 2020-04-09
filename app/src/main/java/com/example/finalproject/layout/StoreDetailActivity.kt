@@ -1,5 +1,6 @@
 package com.example.finalproject.layout
 
+import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -34,7 +35,7 @@ class StoreDetailActivity : AppCompatActivity() {
                 Place.Field.PRICE_LEVEL,
                 Place.Field.ADDRESS,
                 Place.Field.OPENING_HOURS,
-                Place.Field.LAT_LNG,
+                Place.Field.UTC_OFFSET,
                 Place.Field.PHOTO_METADATAS
             )
             val placeRequest = FetchPlaceRequest.newInstance(id!!, fields)
@@ -48,7 +49,13 @@ class StoreDetailActivity : AppCompatActivity() {
         getPhoto(place.photoMetadatas!![0])
         storeNameLabel.text = place.name
         storeAddressLabel.text = place.address
-        storeHoursLabel.text = place.isOpen.toString()
+        if(place.isOpen!!) {
+            storeHoursLabel.text = "Currently Open"
+            storeHoursLabel.setTextColor(Color.DKGRAY)
+        } else {
+            storeHoursLabel.text = "Currently Closed"
+            storeHoursLabel.setTextColor(Color.rgb(128, 0, 0))
+        }
     }
 
     private fun getPhoto(photoMetadata: PhotoMetadata) {

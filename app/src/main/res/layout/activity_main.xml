@@ -15,6 +15,8 @@
         android:id="@+id/storeSearch"
         android:hint="Search for a store"
         android:inputType="text"
+        android:focusable="false"
+        android:onClick="buttonPressed"
         android:autofillHints="" />
     <Button
         android:layout_height="wrap_content"
