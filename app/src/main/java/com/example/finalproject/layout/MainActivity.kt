@@ -5,12 +5,12 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.finalproject.R
 import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.api.model.TypeFilter
-import com.google.android.libraries.places.api.net.PlacesClient
 import com.google.android.libraries.places.widget.Autocomplete
 import com.google.android.libraries.places.widget.AutocompleteActivity
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
@@ -19,10 +19,8 @@ import com.google.firebase.auth.FirebaseAuth
 
 class MainActivity : AppCompatActivity() {
 
-    lateinit var placesClient: PlacesClient
-
-    val AUTOCOMPLETE_REQUEST_CODE = 1
-    val STORE_DETAIL_REQUEST_CODE = 2
+    private val AUTOCOMPLETE_REQUEST_CODE = 1
+    private val STORE_DETAIL_REQUEST_CODE = 2
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,7 +29,7 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    fun buttonPressed(view: View) {
+    fun buttonPressed(@Suppress("UNUSED_PARAMETER") view: View) {
         val intent = Autocomplete.IntentBuilder(
             AutocompleteActivityMode.OVERLAY,
             listOf(
@@ -62,13 +60,12 @@ class MainActivity : AppCompatActivity() {
                     intent.putExtra("places/selected_place", place)
 
                     Log.i("GMAPS", "Place: " + place.toString() + ", " + place.id)
-//                    getPhoto(place.id!!)
                     startActivityForResult(intent, STORE_DETAIL_REQUEST_CODE)
                 }
                 AutocompleteActivity.RESULT_ERROR -> {
-                    // TODO: Handle the error.
                     val status = Autocomplete.getStatusFromIntent(data!!)
                     Log.i("GMAPS", status.statusMessage!!)
+                    Toast.makeText(this, status.statusMessage, Toast.LENGTH_LONG).show()
                 }
                 Activity.RESULT_CANCELED -> {
                     // The user canceled the operation.
@@ -78,17 +75,15 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun showNews(view: View) {
+    fun showNews(@Suppress("UNUSED_PARAMETER") view: View) {
         val intent = Intent(this, NewsActivity::class.java)
         startActivity(intent)
     }
-    fun logout(view: View) {
+    fun logout(@Suppress("UNUSED_PARAMETER") view: View) {
 
         FirebaseAuth.getInstance().signOut()
         deleteFile("login")
         val intent = Intent(this, LoginActivity::class.java)
         startActivity(intent)
     }
-
-
 }

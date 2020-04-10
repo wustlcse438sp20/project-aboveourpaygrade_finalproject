@@ -7,10 +7,10 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.finalproject.R
-import com.example.finalproject.network.RssFeed
+import com.example.finalproject.model.NewsItem
 
 
-class RssFeedAdapter(private val entries: ArrayList<RssFeed.Entry>) :
+class RssFeedAdapter(private val entries: ArrayList<NewsItem>) :
     RecyclerView.Adapter<NewsViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NewsViewHolder {
@@ -35,7 +35,7 @@ class NewsViewHolder(inflater: LayoutInflater, parent: ViewGroup) :
     private val titleView: TextView = itemView.findViewById(R.id.newsItemTitle)
     private val descriptionView: TextView = itemView.findViewById(R.id.newsItemDescription)
 
-    fun bind(entry: RssFeed.Entry) {
+    fun bind(entry: NewsItem) {
         titleView.text = entry.title
         descriptionView.text = entry.description
         itemView.setOnClickListener {

@@ -1,4 +1,6 @@
 <resources>
     <string name="app_name">Final Project</string>
     <string name="title_activity_maps">Map</string>
+    <string name="open_text">Currently Open</string>
+    <string name="closed_text">Currently Closed</string>
 </resources>
