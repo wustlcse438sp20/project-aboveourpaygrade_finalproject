@@ -33,7 +33,7 @@ class SignupFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         database = Firebase.database
-        mAuth = FirebaseAuth.getInstance();
+        mAuth = FirebaseAuth.getInstance()
         btnSignUp.setOnClickListener {
             if (txtUsername.text.toString() == "" || txtPassword.text.toString() == "") {
                 val toast = Toast.makeText(

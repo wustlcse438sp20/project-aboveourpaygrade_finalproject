@@ -1,6 +1,7 @@
 package com.example.finalproject.network
 
 import android.util.Xml
+import com.example.finalproject.model.NewsItem
 import org.xmlpull.v1.XmlPullParser
 import org.xmlpull.v1.XmlPullParserException
 import java.io.IOException
@@ -8,14 +9,12 @@ import java.net.URL
 
 class RssFeed {
 
-    data class Entry(val title: String, val description: String, val link: String)
-
     private val uri = "https://tools.cdc.gov/api/v2/resources/media/403372.rss"
     private val ns = null
 
     // RSS Feed parsing adapted from android docs:
     // https://developer.android.com/training/basics/network-ops/xml#kotlin
-    fun getData(): List<Entry> {
+    fun getData(): List<NewsItem> {
         val url = URL(uri)
         val stream = url.openConnection().getInputStream()
         val parser = Xml.newPullParser()
@@ -24,7 +23,7 @@ class RssFeed {
         parser.setInput(stream, null)
 
         parser.nextTag()
-        val entries = mutableListOf<Entry>()
+        val entries = mutableListOf<NewsItem>()
 
         parser.require(XmlPullParser.START_TAG, ns, "rss")
         parser.next()
@@ -48,7 +47,7 @@ class RssFeed {
     // Parses the contents of an entry. If it encounters a title, summary, or link tag, hands them off
     // to their respective "read" methods for processing. Otherwise, skips the tag.
     @Throws(XmlPullParserException::class, IOException::class)
-    private fun readEntry(parser: XmlPullParser): Entry {
+    private fun readEntry(parser: XmlPullParser): NewsItem {
         parser.require(XmlPullParser.START_TAG, ns, "item")
         var title: String? = null
         var description: String? = null
@@ -64,7 +63,11 @@ class RssFeed {
                 else -> skip(parser)
             }
         }
-        return Entry(title!!, description!!, link!!)
+        return NewsItem(
+            title!!,
+            description!!,
+            link!!
+        )
     }
 
     // Processes title tags in the feed.
