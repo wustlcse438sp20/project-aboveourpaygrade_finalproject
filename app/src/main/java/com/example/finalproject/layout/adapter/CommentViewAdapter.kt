@@ -1,6 +1,7 @@
 package com.example.finalproject.layout.adapter
 
 import android.graphics.Color
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.ImageButton
@@ -20,12 +21,12 @@ import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 
 
-class CommentViewAdapter(private val comments: ArrayList<StoreComment>) :
+class CommentViewAdapter(private val comments: ArrayList<StoreComment>, private val store:Place) :
     RecyclerView.Adapter<CommentViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CommentViewHolder {
         val inflater = LayoutInflater.from(parent.context)
-        return CommentViewHolder(inflater, parent)
+        return CommentViewHolder(inflater, parent, store)
     }
 
     override fun getItemCount(): Int {
@@ -39,13 +40,15 @@ class CommentViewAdapter(private val comments: ArrayList<StoreComment>) :
 
 }
 
-class CommentViewHolder(inflater: LayoutInflater, parent: ViewGroup) :
+class CommentViewHolder(inflater: LayoutInflater, parent: ViewGroup, s:Place) :
     RecyclerView.ViewHolder(inflater.inflate(R.layout.store_comment, parent, false)) {
 
     private val textView: TextView = itemView.findViewById(R.id.commentText)
     private val thumbsUp: ImageButton = itemView.findViewById(R.id.thumbsUpButton)
-    private val thumbsDown: ImageButton = itemView.findViewById(R.id.thumbsDownButton)
     private val pic: ImageView =itemView.findViewById(R.id.pfPic)
+    private val lblLikes:TextView = itemView.findViewById(R.id.likeCount)
+    private val store = s
+
 
     private val selectedColor = Color.rgb(0, 128, 255)
     private val defaultColor = Color.rgb(85, 85, 85)
@@ -57,6 +60,53 @@ class CommentViewHolder(inflater: LayoutInflater, parent: ViewGroup) :
 
         val rand  = comment.uid.hashCode()%8
         var color = Color.RED
+
+
+        val youLikeListener = object : ValueEventListener {
+            override fun onCancelled(p0: DatabaseError) {
+                //Log.v("zach","DATABASE ERROR")
+            }
+
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                //Log.v("zach","Inside the listener & value= "+dataSnapshot.value)
+                if(!dataSnapshot.exists()) {
+                    //Log.v("zach","no snapshot")
+                    return
+                }
+                if(((dataSnapshot.value!!).toString()=="true")){
+                    //Log.v("zach","found the like")
+                    setButtonState(VotingState.UP)
+                }
+
+            }
+        }
+
+        Firebase.database.getReference(store.id.toString()).child(comment.hashCode().toString()).child("likes").child(FirebaseAuth.getInstance().uid!!.toString()).addListenerForSingleValueEvent(youLikeListener)
+
+
+        val likeCountListener= object : ValueEventListener {
+            override fun onCancelled(p0: DatabaseError) {
+
+            }
+
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                if(!dataSnapshot.exists()) {
+                    lblLikes.setText("0");
+                    return
+                }
+                var sum = 0
+                for(s in dataSnapshot.children){
+                    if(dataSnapshot.child(s.key.toString()).value.toString()=="true"){
+                        sum++
+                    }
+                }
+                lblLikes.setText(sum.toString());
+
+            }
+        }
+
+        Firebase.database.getReference(store.id.toString()).child(comment.hashCode().toString()).child("likes").addValueEventListener(likeCountListener)
+
 
         when(rand){
             0->color=Color.RED
@@ -76,52 +126,37 @@ class CommentViewHolder(inflater: LayoutInflater, parent: ViewGroup) :
 
         // Allow buttons to change color independently
         thumbsUp.drawable.mutate()
-        thumbsDown.drawable.mutate()
 
-        setButtonState(comment.vote)
+       // setButtonState()
 
         thumbsUp.setOnClickListener {
+            val mAuth = FirebaseAuth.getInstance()
             if(vote != VotingState.UP) {
                 setButtonState(VotingState.UP)
                 val database = Firebase.database
-                val postListener = object : ValueEventListener {
-                    override fun onCancelled(p0: DatabaseError) {
+                database.getReference(store.id.toString()).child(comment.hashCode().toString()).child("likes").child(mAuth.currentUser!!.uid).setValue(true)
 
-                    }
-
-                    override fun onDataChange(dataSnapshot: DataSnapshot) {
-                        (dataSnapshot.value as HashSet<String>).remove(comment.uid)
-
-                    }
-                }
-                database.getReference(comment.uid.toString()).child(comment.hashCode().toString()).child("dislikes")
-
+            }
+            else{
+                setButtonState(VotingState.NEITHER)
+                val database = Firebase.database
+                database.getReference(store.id.toString()).child(comment.hashCode().toString()).child("likes").child(mAuth.currentUser!!.uid).setValue(false)
             }
 
         }
 
-        thumbsDown.setOnClickListener {
-            if(vote != VotingState.DOWN) {
-                setButtonState(VotingState.DOWN)
-                // TODO: send thumbs down message to firebase
-            }
-        }
     }
 
     private fun setButtonState(vote: VotingState) {
         this.vote = vote
         when (vote) {
             VotingState.UP -> {
-                thumbsDown.drawable.setTint(defaultColor)
                 thumbsUp.drawable.setTint(selectedColor)
-            }
-            VotingState.DOWN -> {
-                thumbsDown.drawable.setTint(selectedColor)
-                thumbsUp.drawable.setTint(defaultColor)
+                lblLikes.setTextColor(selectedColor)
             }
             else -> {
-                thumbsDown.drawable.setTint(defaultColor)
                 thumbsUp.drawable.setTint(defaultColor)
+                lblLikes.setTextColor(defaultColor)
             }
         }
     }

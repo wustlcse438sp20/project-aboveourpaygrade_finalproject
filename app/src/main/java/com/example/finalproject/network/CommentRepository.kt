@@ -33,8 +33,7 @@ class CommentRepository {
                 var cmtList = ArrayList<StoreComment>()
                 for(tmp in children) {
                     var value = tmp.value  as HashMap<String, String>
-                    //Log.v("zach","vote stored = "+tmp["vote"])
-                    val cmt = StoreComment(value["text"]!!, voteStateStr(value["vote"]!!), value["char"]!![0].toString(),value["uid"]!!)
+                    val cmt = StoreComment(value["text"]!!, value["char"]!![0].toString(),value["uid"]!!)
                     cmtList.add(cmt)
                 }
                 resBody.value=cmtList
@@ -52,17 +51,14 @@ class CommentRepository {
         if(s=="UP")
             return VotingState.UP;
         else
-            if(s=="DOWN")
-                return VotingState.DOWN
-            else
-                return VotingState.NEITHER
+            return VotingState.NEITHER
     }
 
     fun uploadComment(comment: StoreComment, store: Place) {
 
         val mAuth = FirebaseAuth.getInstance()
         val database = Firebase.database
-        Log.v("zach","About to add to database: "+comment.uid+", "+comment.text)
+        //Log.v("zach","About to add to database: "+comment.uid+", "+comment.text)
         database.getReference(store.id!!).child(comment.hashCode().toString()).setValue(comment)
 
 

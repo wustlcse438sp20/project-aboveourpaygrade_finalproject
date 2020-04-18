@@ -21,8 +21,17 @@
         android:id="@+id/commentText"
         app:layout_constraintStart_toEndOf="@id/pfPic"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/thumbsDownButton"
+        app:layout_constraintEnd_toStartOf="@id/likeCount"
         android:layout_margin="5dp"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/likeCount"
+        android:layout_margin="5dp"
+        app:layout_constraintStart_toEndOf="@id/commentText"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/thumbsUpButton"
+        ></TextView>
     <ImageButton
         android:id="@+id/thumbsUpButton"
         android:layout_width="0dp"
@@ -30,15 +39,7 @@
         android:layout_margin="5dp"
         android:background="?android:attr/selectableItemBackground"
         android:src="@drawable/ic_thumb_up_black_24dp"
-        app:layout_constraintEnd_toStartOf="@id/thumbsDownButton"
-        app:layout_constraintTop_toTopOf="parent" />
-    <ImageButton
-        android:id="@+id/thumbsDownButton"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_margin="5dp"
-        android:background="?android:attr/selectableItemBackground"
-        android:src="@drawable/ic_thumb_down_black_24dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

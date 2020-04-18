@@ -67,7 +67,7 @@ class StoreDetailActivity : AppCompatActivity() {
         val mAuth = FirebaseAuth.getInstance()
 
         commentViewModel = CommentViewModel(place!!, mAuth.uid!!)
-        val adapter = CommentViewAdapter(comments)
+        val adapter = CommentViewAdapter(comments,place!!)
         commentsList.layoutManager = LinearLayoutManager(this)
         commentsList.adapter = adapter
 
@@ -128,8 +128,8 @@ class StoreDetailActivity : AppCompatActivity() {
     fun leaveComment(@Suppress("UNUSED_PARAMETER")  view: View) {
         val commentText = commentField.text.toString()
         val  mAuth = FirebaseAuth.getInstance()
-        Log.v("zach","currentUser==null: "+(mAuth.currentUser==null))
-        val comment = (StoreComment(commentText, VotingState.NEITHER,mAuth.currentUser!!.email!!.toUpperCase()[0].toString(),mAuth.currentUser!!.uid))
+       // Log.v("zach","currentUser==null: "+(mAuth.currentUser==null))
+        val comment = (StoreComment(commentText,mAuth.currentUser!!.email!!.toUpperCase()[0].toString(),mAuth.currentUser!!.uid))
         try {
             commentViewModel.addComment(comment)
             Toast.makeText(this,"Comment successfully added.",Toast.LENGTH_SHORT).show()
