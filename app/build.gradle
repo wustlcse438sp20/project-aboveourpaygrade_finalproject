@@ -7,7 +7,6 @@ apply plugin: 'kotlin-android-extensions'
 apply plugin: 'com.google.gms.google-services'
 
 
-
 android {
     compileSdkVersion 29
 //    buildToolsVersion "29.0.2"
@@ -52,5 +51,12 @@ dependencies {
     // Coroutines
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.0.1'
 
+    implementation 'com.amulyakhare:com.amulyakhare.textdrawable:1.0.1'
 
+
+}
+repositories{
+    maven {
+        url 'http://dl.bintray.com/amulyakhare/maven'
+    }
 }

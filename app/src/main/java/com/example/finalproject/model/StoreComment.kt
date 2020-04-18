@@ -1,6 +1,9 @@
 package com.example.finalproject.model
 
-data class StoreComment(val text: String, val vote: VotingState)
+import com.google.android.libraries.places.api.model.Place
+import java.io.Serializable
+
+data class StoreComment(val text: String, val vote: VotingState, val char : String, val uid : String) : Serializable
 
 enum class VotingState {
     UP, DOWN, NEITHER

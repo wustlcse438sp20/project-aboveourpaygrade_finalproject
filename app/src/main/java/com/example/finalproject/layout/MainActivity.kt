@@ -75,6 +75,7 @@ class MainActivity : AppCompatActivity() {
                     val place = data!!.getParcelableExtra("places/selected_place") as Place
                     val intent = Intent(this, StoreDetailActivity::class.java)
 
+
                     intent.putExtra("contents", "place_extra")
                     intent.putExtra("places/selected_place", place)
 

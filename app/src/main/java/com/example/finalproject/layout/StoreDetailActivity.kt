@@ -1,5 +1,6 @@
 package com.example.finalproject.layout
 
+import android.content.Intent
 import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -19,6 +20,7 @@ import com.google.android.libraries.places.api.model.PhotoMetadata
 import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.api.net.*
 import com.google.android.libraries.places.widget.Autocomplete
+import com.google.firebase.auth.FirebaseAuth
 import kotlinx.android.synthetic.main.activity_store_detail.*
 
 class StoreDetailActivity : AppCompatActivity() {
@@ -26,31 +28,20 @@ class StoreDetailActivity : AppCompatActivity() {
     private lateinit var placesClient: PlacesClient
     private lateinit var commentViewModel: CommentViewModel
     private val comments = ArrayList<StoreComment>()
+    private var place : Place? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_store_detail)
 
-        // Fetch comment data
-        commentViewModel = CommentViewModel()
-        val adapter = CommentViewAdapter(comments)
-        commentsList.layoutManager = LinearLayoutManager(this)
-        commentsList.adapter = adapter
 
-        commentViewModel.data.observe(this, Observer {
-            comments.clear()
-            comments.addAll(it)
-            adapter.notifyDataSetChanged()
-        })
-
-        commentViewModel.loadComments()
 
         // Fetch place data
         placesClient = Places.createClient(this)
         val type = intent.getStringExtra("contents")
         if(type == "place_extra") {
-            val place = Autocomplete.getPlaceFromIntent(intent)
-            updateInterface(place)
+            place = Autocomplete.getPlaceFromIntent(intent)
+            updateInterface(place!!)
         } else {
             val id = intent.getStringExtra("place_id")
             val fields = listOf(
@@ -64,9 +55,29 @@ class StoreDetailActivity : AppCompatActivity() {
             )
             val placeRequest = FetchPlaceRequest.newInstance(id!!, fields)
             placesClient.fetchPlace(placeRequest).addOnSuccessListener {
+                //Log.v("zach", "return from maps API & update place")
+                place=it.place
                 updateInterface(it.place)
             }
         }
+
+
+
+        // Fetch comment data
+        val mAuth = FirebaseAuth.getInstance()
+
+        commentViewModel = CommentViewModel(place!!, mAuth.uid!!)
+        val adapter = CommentViewAdapter(comments)
+        commentsList.layoutManager = LinearLayoutManager(this)
+        commentsList.adapter = adapter
+
+        commentViewModel.data.observe(this, Observer {
+            comments.clear()
+            comments.addAll(it)
+            adapter.notifyDataSetChanged()
+        })
+
+        commentViewModel.loadComments()
     }
 
     private fun updateInterface(place: Place) {
@@ -116,7 +127,17 @@ class StoreDetailActivity : AppCompatActivity() {
     }
     fun leaveComment(@Suppress("UNUSED_PARAMETER")  view: View) {
         val commentText = commentField.text.toString()
-        val comment = StoreComment(commentText, VotingState.UP)
-        commentViewModel.addComment(comment)
+        val  mAuth = FirebaseAuth.getInstance()
+        Log.v("zach","currentUser==null: "+(mAuth.currentUser==null))
+        val comment = (StoreComment(commentText, VotingState.NEITHER,mAuth.currentUser!!.email!!.toUpperCase()[0].toString(),mAuth.currentUser!!.uid))
+        try {
+            commentViewModel.addComment(comment)
+            Toast.makeText(this,"Comment successfully added.",Toast.LENGTH_SHORT).show()
+        }
+        catch(e:Exception){
+            Toast.makeText(this,"Something went wrong, try again.",Toast.LENGTH_SHORT).show()
+        }
+
+
     }
 }
