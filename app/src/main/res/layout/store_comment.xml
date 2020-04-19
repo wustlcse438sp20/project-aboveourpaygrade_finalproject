@@ -28,6 +28,7 @@
         app:layout_constraintStart_toEndOf="@id/commentText"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toStartOf="@id/thumbsUpButton"
+        app:layout_constraintBottom_toBottomOf="parent"
         />
     <ImageButton
         android:id="@+id/thumbsUpButton"
