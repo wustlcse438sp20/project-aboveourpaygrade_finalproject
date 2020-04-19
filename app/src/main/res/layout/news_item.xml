@@ -10,11 +10,11 @@
         android:id="@+id/newsItemTitle"
         android:textColor="@color/colorPrimary"
         android:textStyle="bold"
-        android:text="Coronavirus is allergic to dogs"/>
+        android:text=""/>
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/newsItemDescription"
         android:textColor="@android:color/secondary_text_light"
-        android:text="New studies show that giving Fido lots of treats is a surefire way of warding off the virus for your and your loved ones."/>
+        android:text=""/>
 </LinearLayout>

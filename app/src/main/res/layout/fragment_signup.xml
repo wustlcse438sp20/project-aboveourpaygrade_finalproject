@@ -15,27 +15,23 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-
-        >
+        app:layout_constraintBottom_toBottomOf="parent">
         <TextView
             android:id="@+id/lblSignUp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="32dp"
             android:textSize="32sp"
-            android:text="Sign Up"
+            android:text="@string/sign_up"
             />
-
         <EditText
             android:id="@+id/txtUsername"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:ems="10"
             android:layout_margin="32dp"
-            android:inputType="textPersonName"
-            android:hint="Email" />
-
+            android:inputType="textEmailAddress"
+            android:hint="@string/email" />
         <EditText
             android:id="@+id/txtPassword"
             android:layout_width="wrap_content"
@@ -43,17 +39,13 @@
             android:layout_margin="32dp"
             android:ems="10"
             android:inputType="textPassword"
-            android:hint="Password" />
-
-
+            android:hint="@string/password" />
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Sign Up"
+            android:text="@string/sign_up"
             android:layout_margin="32dp"
-            android:id="@+id/btnSignUp"
-
-            ></Button>
+            android:id="@+id/btnSignUp" />
 
 
 

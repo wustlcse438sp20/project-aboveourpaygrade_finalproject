@@ -9,7 +9,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/backButton"
-        android:text="Back"
+        android:text="@string/back"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         android:onClick="back" />
@@ -19,7 +19,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/backButton"
-        android:text="Store Name"
+        android:text=""
         android:id="@+id/storeNameLabel"
         android:textSize="28sp" />
     <ImageView
@@ -28,11 +28,12 @@
         android:id="@+id/storeThumbnailView"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/storeNameLabel" />
+        app:layout_constraintTop_toBottomOf="@id/storeNameLabel"
+        android:contentDescription="@string/store_image" />
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Address"
+        android:text=""
         android:id="@+id/storeAddressLabel"
         app:layout_constraintTop_toBottomOf="@id/storeThumbnailView"
         app:layout_constraintEnd_toEndOf="parent"
@@ -40,7 +41,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hours"
+        android:text=""
         android:id="@+id/storeHoursLabel"
         app:layout_constraintTop_toBottomOf="@id/storeAddressLabel"
         app:layout_constraintEnd_toEndOf="parent"
@@ -57,15 +58,17 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:id="@+id/commentField"
-        android:hint="Leave a comment"
+        android:hint="@string/leave_a_comment"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/commentButton"/>
+        app:layout_constraintEnd_toStartOf="@+id/commentButton"
+        android:importantForAutofill="no"
+        android:inputType="text" />
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:onClick="leaveComment"
-        android:text="Comment"
+        android:text="@string/comment"
         android:id="@+id/commentButton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"/>

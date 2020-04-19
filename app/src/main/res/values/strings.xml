@@ -3,4 +3,18 @@
     <string name="title_activity_maps">Map</string>
     <string name="open_text">Currently Open</string>
     <string name="closed_text">Currently Closed</string>
+    <string name="thumbs_up">Thumbs Up</string>
+    <string name="user_avatar">User Avatar</string>
+    <string name="login">Login</string>
+    <string name="password">Password</string>
+    <string name="email">Email</string>
+    <string name="sign_up">Sign Up</string>
+    <string name="back">Back</string>
+    <string name="leave_a_comment">Leave a comment</string>
+    <string name="comment">Comment</string>
+    <string name="store_image">Store Image</string>
+    <string name="news">News</string>
+    <string name="search_for_a_store">Search for a store</string>
+    <string name="search">Search</string>
+    <string name="logout">Logout</string>
 </resources>

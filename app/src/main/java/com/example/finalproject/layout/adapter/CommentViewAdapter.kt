@@ -1,7 +1,6 @@
 package com.example.finalproject.layout.adapter
 
 import android.graphics.Color
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.ImageButton
@@ -21,7 +20,7 @@ import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 
 
-class CommentViewAdapter(private val comments: ArrayList<StoreComment>, private val store:Place) :
+class CommentViewAdapter(private val comments: ArrayList<StoreComment>, private val store: Place) :
     RecyclerView.Adapter<CommentViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CommentViewHolder {
@@ -40,13 +39,13 @@ class CommentViewAdapter(private val comments: ArrayList<StoreComment>, private 
 
 }
 
-class CommentViewHolder(inflater: LayoutInflater, parent: ViewGroup, s:Place) :
+class CommentViewHolder(inflater: LayoutInflater, parent: ViewGroup, s: Place) :
     RecyclerView.ViewHolder(inflater.inflate(R.layout.store_comment, parent, false)) {
 
     private val textView: TextView = itemView.findViewById(R.id.commentText)
     private val thumbsUp: ImageButton = itemView.findViewById(R.id.thumbsUpButton)
-    private val pic: ImageView =itemView.findViewById(R.id.pfPic)
-    private val lblLikes:TextView = itemView.findViewById(R.id.likeCount)
+    private val pic: ImageView = itemView.findViewById(R.id.pfPic)
+    private val lblLikes: TextView = itemView.findViewById(R.id.likeCount)
     private val store = s
 
 
@@ -58,7 +57,7 @@ class CommentViewHolder(inflater: LayoutInflater, parent: ViewGroup, s:Place) :
     fun bind(comment: StoreComment) {
         textView.text = comment.text
 
-        val rand  = comment.uid.hashCode()%8
+        val rand = comment.uid.hashCode() % 8
         var color = Color.RED
 
 
@@ -69,11 +68,11 @@ class CommentViewHolder(inflater: LayoutInflater, parent: ViewGroup, s:Place) :
 
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 //Log.v("zach","Inside the listener & value= "+dataSnapshot.value)
-                if(!dataSnapshot.exists()) {
+                if (!dataSnapshot.exists()) {
                     //Log.v("zach","no snapshot")
                     return
                 }
-                if(((dataSnapshot.value!!).toString()=="true")){
+                if (((dataSnapshot.value!!).toString() == "true")) {
                     //Log.v("zach","found the like")
                     setButtonState(VotingState.UP)
                 }
@@ -81,42 +80,45 @@ class CommentViewHolder(inflater: LayoutInflater, parent: ViewGroup, s:Place) :
             }
         }
 
-        Firebase.database.getReference(store.id.toString()).child(comment.hashCode().toString()).child("likes").child(FirebaseAuth.getInstance().uid!!.toString()).addListenerForSingleValueEvent(youLikeListener)
+        Firebase.database.getReference(store.id.toString()).child(comment.hashCode().toString())
+            .child("likes").child(FirebaseAuth.getInstance().uid!!.toString())
+            .addListenerForSingleValueEvent(youLikeListener)
 
 
-        val likeCountListener= object : ValueEventListener {
+        val likeCountListener = object : ValueEventListener {
             override fun onCancelled(p0: DatabaseError) {
 
             }
 
             override fun onDataChange(dataSnapshot: DataSnapshot) {
-                if(!dataSnapshot.exists()) {
-                    lblLikes.setText("0");
+                if (!dataSnapshot.exists()) {
+                    lblLikes.text = "0"
                     return
                 }
                 var sum = 0
-                for(s in dataSnapshot.children){
-                    if(dataSnapshot.child(s.key.toString()).value.toString()=="true"){
+                for (s in dataSnapshot.children) {
+                    if (dataSnapshot.child(s.key.toString()).value.toString() == "true") {
                         sum++
                     }
                 }
-                lblLikes.setText(sum.toString());
+                lblLikes.text = sum.toString()
 
             }
         }
 
-        Firebase.database.getReference(store.id.toString()).child(comment.hashCode().toString()).child("likes").addValueEventListener(likeCountListener)
+        Firebase.database.getReference(store.id.toString()).child(comment.hashCode().toString())
+            .child("likes").addValueEventListener(likeCountListener)
 
 
-        when(rand){
-            0->color=Color.RED
-            1->color=Color.BLUE
-            2->color=Color.GREEN
-            3->color=Color.YELLOW
-            4->color=Color.BLACK
-            5->color=Color.CYAN
-            6->color=Color.GRAY
-            7->color=Color.MAGENTA
+        when (rand) {
+            0 -> color = Color.RED
+            1 -> color = Color.BLUE
+            2 -> color = Color.GREEN
+            3 -> color = Color.YELLOW
+            4 -> color = Color.BLACK
+            5 -> color = Color.CYAN
+            6 -> color = Color.GRAY
+            7 -> color = Color.MAGENTA
         }
 
 
@@ -127,20 +129,21 @@ class CommentViewHolder(inflater: LayoutInflater, parent: ViewGroup, s:Place) :
         // Allow buttons to change color independently
         thumbsUp.drawable.mutate()
 
-       // setButtonState()
+        // setButtonState()
 
         thumbsUp.setOnClickListener {
             val mAuth = FirebaseAuth.getInstance()
-            if(vote != VotingState.UP) {
+            if (vote != VotingState.UP) {
                 setButtonState(VotingState.UP)
                 val database = Firebase.database
-                database.getReference(store.id.toString()).child(comment.hashCode().toString()).child("likes").child(mAuth.currentUser!!.uid).setValue(true)
+                database.getReference(store.id.toString()).child(comment.hashCode().toString())
+                    .child("likes").child(mAuth.currentUser!!.uid).setValue(true)
 
-            }
-            else{
+            } else {
                 setButtonState(VotingState.NEITHER)
                 val database = Firebase.database
-                database.getReference(store.id.toString()).child(comment.hashCode().toString()).child("likes").child(mAuth.currentUser!!.uid).setValue(false)
+                database.getReference(store.id.toString()).child(comment.hashCode().toString())
+                    .child("likes").child(mAuth.currentUser!!.uid).setValue(false)
             }
 
         }

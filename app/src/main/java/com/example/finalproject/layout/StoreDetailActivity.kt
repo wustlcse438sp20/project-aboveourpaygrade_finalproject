@@ -1,24 +1,25 @@
 package com.example.finalproject.layout
 
-import android.content.Intent
 import android.graphics.Color
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.finalproject.R
 import com.example.finalproject.layout.adapter.CommentViewAdapter
 import com.example.finalproject.model.StoreComment
-import com.example.finalproject.model.VotingState
 import com.example.finalproject.network.CommentViewModel
 import com.google.android.gms.common.api.ApiException
 import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.model.PhotoMetadata
 import com.google.android.libraries.places.api.model.Place
-import com.google.android.libraries.places.api.net.*
+import com.google.android.libraries.places.api.net.FetchPhotoRequest
+import com.google.android.libraries.places.api.net.FetchPhotoResponse
+import com.google.android.libraries.places.api.net.FetchPlaceRequest
+import com.google.android.libraries.places.api.net.PlacesClient
 import com.google.android.libraries.places.widget.Autocomplete
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.android.synthetic.main.activity_store_detail.*
@@ -28,18 +29,17 @@ class StoreDetailActivity : AppCompatActivity() {
     private lateinit var placesClient: PlacesClient
     private lateinit var commentViewModel: CommentViewModel
     private val comments = ArrayList<StoreComment>()
-    private var place : Place? = null
+    private var place: Place? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_store_detail)
 
 
-
         // Fetch place data
         placesClient = Places.createClient(this)
         val type = intent.getStringExtra("contents")
-        if(type == "place_extra") {
+        if (type == "place_extra") {
             place = Autocomplete.getPlaceFromIntent(intent)
             updateInterface(place!!)
         } else {
@@ -56,18 +56,17 @@ class StoreDetailActivity : AppCompatActivity() {
             val placeRequest = FetchPlaceRequest.newInstance(id!!, fields)
             placesClient.fetchPlace(placeRequest).addOnSuccessListener {
                 //Log.v("zach", "return from maps API & update place")
-                place=it.place
+                place = it.place
                 updateInterface(it.place)
             }
         }
-
 
 
         // Fetch comment data
         val mAuth = FirebaseAuth.getInstance()
 
         commentViewModel = CommentViewModel(place!!, mAuth.uid!!)
-        val adapter = CommentViewAdapter(comments,place!!)
+        val adapter = CommentViewAdapter(comments, place!!)
         commentsList.layoutManager = LinearLayoutManager(this)
         commentsList.adapter = adapter
 
@@ -84,7 +83,7 @@ class StoreDetailActivity : AppCompatActivity() {
         getPhoto(place.photoMetadatas!![0])
         storeNameLabel.text = place.name
         storeAddressLabel.text = place.address
-        if(place.isOpen!!) {
+        if (place.isOpen!!) {
             storeHoursLabel.text = getString(R.string.open_text)
             storeHoursLabel.setTextColor(Color.DKGRAY)
         } else {
@@ -125,17 +124,21 @@ class StoreDetailActivity : AppCompatActivity() {
     fun back(@Suppress("UNUSED_PARAMETER") view: View) {
         finish()
     }
-    fun leaveComment(@Suppress("UNUSED_PARAMETER")  view: View) {
+
+    fun leaveComment(@Suppress("UNUSED_PARAMETER") view: View) {
         val commentText = commentField.text.toString()
-        val  mAuth = FirebaseAuth.getInstance()
-       // Log.v("zach","currentUser==null: "+(mAuth.currentUser==null))
-        val comment = (StoreComment(commentText,mAuth.currentUser!!.email!!.toUpperCase()[0].toString(),mAuth.currentUser!!.uid))
+        val mAuth = FirebaseAuth.getInstance()
+        // Log.v("zach","currentUser==null: "+(mAuth.currentUser==null))
+        val comment = (StoreComment(
+            commentText,
+            mAuth.currentUser!!.email!!.toUpperCase()[0].toString(),
+            mAuth.currentUser!!.uid
+        ))
         try {
             commentViewModel.addComment(comment)
-            Toast.makeText(this,"Comment successfully added.",Toast.LENGTH_SHORT).show()
-        }
-        catch(e:Exception){
-            Toast.makeText(this,"Something went wrong, try again.",Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Comment successfully added.", Toast.LENGTH_SHORT).show()
+        } catch (e: Exception) {
+            Toast.makeText(this, "Something went wrong, try again.", Toast.LENGTH_SHORT).show()
         }
 
 

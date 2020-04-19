@@ -75,11 +75,11 @@ class MainActivity : AppCompatActivity() {
                     val place = data!!.getParcelableExtra("places/selected_place") as Place
                     val intent = Intent(this, StoreDetailActivity::class.java)
 
-
                     intent.putExtra("contents", "place_extra")
                     intent.putExtra("places/selected_place", place)
 
                     Log.i("GMAPS", "Place: " + place.toString() + ", " + place.id)
+                    storeViewModel.uploadStore(StoreListing(place.id!!, place.name!!))
                     startActivityForResult(intent, STORE_DETAIL_REQUEST_CODE)
                 }
                 AutocompleteActivity.RESULT_ERROR -> {
@@ -99,6 +99,7 @@ class MainActivity : AppCompatActivity() {
         val intent = Intent(this, NewsActivity::class.java)
         startActivity(intent)
     }
+
     fun logout(@Suppress("UNUSED_PARAMETER") view: View) {
 
         FirebaseAuth.getInstance().signOut()

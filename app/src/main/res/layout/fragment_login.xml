@@ -31,8 +31,8 @@
             android:layout_height="wrap_content"
             android:ems="10"
             android:layout_margin="32dp"
-            android:inputType="textPersonName"
-            android:hint="Email" />
+            android:inputType="textEmailAddress"
+            android:hint="@string/email" />
 
         <EditText
             android:id="@+id/txtPassword"
@@ -41,19 +41,13 @@
             android:layout_margin="32dp"
             android:ems="10"
             android:inputType="textPassword"
-            android:hint="Password" />
+            android:hint="@string/password" />
         <Button
             android:id="@+id/btnLogin"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="32dp"
-            android:text="Login"
-            />
-        <Button
-            android:id="@+id/btnForgot"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Forgot Password"
+            android:text="@string/login"
             />
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

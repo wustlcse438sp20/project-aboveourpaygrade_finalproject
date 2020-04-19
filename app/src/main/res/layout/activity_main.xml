@@ -5,7 +5,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".layout.MainActivity">
-
     <EditText
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -13,7 +12,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/searchButton"
         android:id="@+id/storeSearch"
-        android:hint="Search for a store"
+        android:hint="@string/search_for_a_store"
         android:inputType="text"
         android:focusable="false"
         android:onClick="buttonPressed"
@@ -24,7 +23,7 @@
         android:id="@+id/searchButton"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:text="Search"
+        android:text="@string/search"
         android:onClick="buttonPressed"/>
     <androidx.recyclerview.widget.RecyclerView
         android:layout_width="match_parent"
@@ -38,7 +37,7 @@
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        android:text="News"
+        android:text="@string/news"
         android:id="@+id/newsButton"
         android:onClick="showNews" />
     <Button
@@ -46,9 +45,6 @@
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:text="Logout"
+        android:text="@string/logout"
         android:onClick="logout" />
-
-
-
 </androidx.constraintlayout.widget.ConstraintLayout>
