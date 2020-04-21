@@ -1,8 +1,6 @@
-App Name:
-Team Members:
+App Name: Take Stock
+Team Members: Ben Siderowf and Zach Isaacson
 
-In this file you should include:
 
-Any information you think we should know about your submission
-* Is there anything that doesn't work? Why?
-* Is there anything that you did that you feel might be unclear? Explain it here.
+Important to note:
+  The Google API we used for our project is payed based on usage, and our API key isn't included in this repository to prevent GitHub web trawlers from using it to charge my account. 
