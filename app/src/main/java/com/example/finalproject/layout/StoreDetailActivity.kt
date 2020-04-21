@@ -1,7 +1,10 @@
 package com.example.finalproject.layout
 
 import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
+import android.text.Html
+import android.text.method.LinkMovementMethod
 import android.util.Log
 import android.view.View
 import android.widget.Toast
@@ -66,16 +69,6 @@ class StoreDetailActivity : AppCompatActivity() {
 
             }
         }
-
-
-        // Fetch comment data
-
-
-
-
-
-
-
     }
 
     private fun updateInterface(place: Place) {
@@ -94,6 +87,12 @@ class StoreDetailActivity : AppCompatActivity() {
     private fun getPhoto(photoMetadata: PhotoMetadata) {
         // Get the attribution text.
         val attributions = photoMetadata.attributions
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            photoAttribution.append(Html.fromHtml(attributions, Html.FROM_HTML_MODE_LEGACY))
+        } else {
+            photoAttribution.append(Html.fromHtml(attributions))
+        }
+        photoAttribution.movementMethod = LinkMovementMethod.getInstance()
         // Create a FetchPhotoRequest.
         val photoRequest = FetchPhotoRequest.builder(photoMetadata)
             .setMaxWidth(500) // Optional.
@@ -103,11 +102,6 @@ class StoreDetailActivity : AppCompatActivity() {
             .addOnSuccessListener { fetchPhotoResponse: FetchPhotoResponse ->
                 val bitmap = fetchPhotoResponse.bitmap
                 storeThumbnailView.setImageBitmap(bitmap)
-                storeThumbnailView.setOnLongClickListener {
-                    val toast = Toast.makeText(applicationContext, attributions, Toast.LENGTH_LONG)
-                    toast.show()
-                    true
-                }
             }.addOnFailureListener { exception: Exception ->
                 if (exception is ApiException) {
                     val statusCode = exception.statusCode
@@ -144,7 +138,7 @@ class StoreDetailActivity : AppCompatActivity() {
 
     }
 
-    fun createAdapter(){
+    private fun createAdapter(){
         val mAuth = FirebaseAuth.getInstance()
         commentViewModel = CommentViewModel(place!!, mAuth.uid!!)
         val adapter = CommentViewAdapter(comments, place!!)
