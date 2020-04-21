@@ -11,6 +11,7 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.finalproject.R
 import com.example.finalproject.layout.adapter.StoreListAdapter
+import com.example.finalproject.model.StoreComment
 import com.example.finalproject.model.StoreListing
 import com.example.finalproject.network.StoreListViewModel
 import com.google.android.libraries.places.api.Places
@@ -20,6 +21,11 @@ import com.google.android.libraries.places.widget.Autocomplete
 import com.google.android.libraries.places.widget.AutocompleteActivity
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.ValueEventListener
+import com.google.firebase.database.ktx.database
+import com.google.firebase.ktx.Firebase
 import kotlinx.android.synthetic.main.activity_main.*
 
 
@@ -46,6 +52,10 @@ class MainActivity : AppCompatActivity() {
             adapter.notifyDataSetChanged()
         })
         storeViewModel.getStores()
+
+
+
+
     }
 
     fun buttonPressed(@Suppress("UNUSED_PARAMETER") view: View) {
