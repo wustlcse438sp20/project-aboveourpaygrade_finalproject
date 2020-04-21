@@ -57,7 +57,7 @@ class CommentViewHolder(inflater: LayoutInflater, parent: ViewGroup, s: Place) :
     fun bind(comment: StoreComment) {
         textView.text = comment.text
 
-        val rand = comment.uid.hashCode() % 8
+        val rand = comment.uid.toString().hashCode() % 8
         var color = Color.RED
 
 
