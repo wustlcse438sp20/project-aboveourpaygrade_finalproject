@@ -15,7 +15,7 @@ class StoreListRepository {
     fun getStores(stores: MutableLiveData<List<StoreListing>>) {
         // TODO: get stores from firebase & store in live data
         // stores.value = data
-        var cmtStoreList = HashSet<String>()
+        var cmtStoreList = HashMap<String,String>()
         val database = Firebase.database
         val mAuth = FirebaseAuth.getInstance()
 
@@ -28,11 +28,17 @@ class StoreListRepository {
                     val children2 = tmp.children
                     for (tmp2 in children2) {
                         if (tmp2.child("uid").value.toString() == mAuth.currentUser!!.uid.toString()) {
-                            cmtStoreList.add(tmp.key.toString())
+                            cmtStoreList.put(tmp.key.toString(),tmp.child("name").value.toString())
                            // Log.v("zach","user commented on store: "+tmp.key.toString())
                         }
                     }
                 }
+
+                var data = ArrayList<StoreListing>()
+                for(s in cmtStoreList.keys){
+                    data.add(StoreListing(s,cmtStoreList[s]!!))
+                }
+                stores.value=data
             }
             override fun onCancelled(databaseError: DatabaseError) {}
         }

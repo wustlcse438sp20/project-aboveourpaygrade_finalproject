@@ -22,6 +22,8 @@ import com.google.android.libraries.places.api.net.FetchPlaceRequest
 import com.google.android.libraries.places.api.net.PlacesClient
 import com.google.android.libraries.places.widget.Autocomplete
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.ktx.database
+import com.google.firebase.ktx.Firebase
 import kotlinx.android.synthetic.main.activity_store_detail.*
 
 class StoreDetailActivity : AppCompatActivity() {
@@ -41,6 +43,7 @@ class StoreDetailActivity : AppCompatActivity() {
         val type = intent.getStringExtra("contents")
         if (type == "place_extra") {
             place = Autocomplete.getPlaceFromIntent(intent)
+            createAdapter()
             updateInterface(place!!)
         } else {
             val id = intent.getStringExtra("place_id")
@@ -57,26 +60,22 @@ class StoreDetailActivity : AppCompatActivity() {
             placesClient.fetchPlace(placeRequest).addOnSuccessListener {
                 //Log.v("zach", "return from maps API & update place")
                 place = it.place
+                createAdapter()
                 updateInterface(it.place)
+
+
             }
         }
 
 
         // Fetch comment data
-        val mAuth = FirebaseAuth.getInstance()
 
-        commentViewModel = CommentViewModel(place!!, mAuth.uid!!)
-        val adapter = CommentViewAdapter(comments, place!!)
-        commentsList.layoutManager = LinearLayoutManager(this)
-        commentsList.adapter = adapter
 
-        commentViewModel.data.observe(this, Observer {
-            comments.clear()
-            comments.addAll(it)
-            adapter.notifyDataSetChanged()
-        })
 
-        commentViewModel.loadComments()
+
+
+
+
     }
 
     private fun updateInterface(place: Place) {
@@ -136,11 +135,27 @@ class StoreDetailActivity : AppCompatActivity() {
         ))
         try {
             commentViewModel.addComment(comment)
+            val database = Firebase.database
+            database.getReference(place!!.id.toString()).child("name").setValue(storeNameLabel.text.toString())
             Toast.makeText(this, "Comment successfully added.", Toast.LENGTH_SHORT).show()
         } catch (e: Exception) {
             Toast.makeText(this, "Something went wrong, try again.", Toast.LENGTH_SHORT).show()
         }
 
+    }
 
+    fun createAdapter(){
+        val mAuth = FirebaseAuth.getInstance()
+        commentViewModel = CommentViewModel(place!!, mAuth.uid!!)
+        val adapter = CommentViewAdapter(comments, place!!)
+        commentsList.layoutManager = LinearLayoutManager(this)
+        commentsList.adapter = adapter
+        commentViewModel.data.observe(this, Observer {
+            comments.clear()
+            comments.addAll(it)
+            adapter.notifyDataSetChanged()
+        })
+
+        commentViewModel.loadComments()
     }
 }

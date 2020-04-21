@@ -22,6 +22,8 @@ class CommentRepository {
                 val children = dataSnapshot.children
                 val cmtList = ArrayList<StoreComment>()
                 for (tmp in children) {
+                    if(tmp.key.toString()=="name")
+                        continue;
                     val value = tmp.value as HashMap<String, String>
                     val cmt =
                         StoreComment(value["text"]!!, value["char"]!![0].toString(), value["uid"]!!)
